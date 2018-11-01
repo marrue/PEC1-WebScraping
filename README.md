@@ -10,5 +10,7 @@ El script extrae el tiempo en Donostia-San Sebastián para los próximos días d
 * Imagen asociada al tiempo 
 
 Para ejecutar el script es necesario instalar las siguientes librerías:
+```
 pip3 install requests
 pip3 install beautifulsoup4
+```
