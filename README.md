@@ -1,4 +1,4 @@
-# PEC1-WebScraping
+# PEC1 - Web Scraping
 ## Descripción
 El script extrae el tiempo en Donostia-San Sebastián para los próximos días de la página del ayuntamiento. La información que extrae para cada uno de los días es la siguiente:
 
