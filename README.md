@@ -1,4 +1,4 @@
-# PEC1 - Web Scraping
+# PRAC1 - Web Scraping
 ## Descripción
 El script extrae el tiempo en Donostia-San Sebastián para los próximos días de la [página del ayuntamiento](https://www.donostia.eus/Actividad.nsf/frmWeb?ReadForm&idioma=cas). La información que extrae para cada uno de los días es la siguiente:
 
