@@ -1,6 +1,8 @@
 # Carga de librerías
 import requests
 from bs4 import BeautifulSoup
+import csv
+import os
 
 # Carga de la pagina web
 page = requests.get("https://www.donostia.eus/Actividad.nsf/frmWeb?ReadForm&idioma=cas")
@@ -10,6 +12,9 @@ soup = BeautifulSoup(page.content)
 
 # Busqueda del elemento que contiene la información
 data = soup.find(class_= "contenidoTiempo")
+
+# Directorio donde se encuentra el script
+directorio_script = os.path.dirname(__file__)
 
 # Definición de la función de extracción de información
 def extract_info(day_href):
@@ -22,27 +27,32 @@ def extract_info(day_href):
     return(day_name,day_temp,day_cond,day_rain,day_text)
 
 # Definición de la función de extracción de imagenes
-def load_requests(source_url):
+def load_requests(source_url, dia, directorio):
     r = requests.get(source_url, stream = True)
     if r.status_code == 200:
         aSplit = source_url.split('/')
-        ruta = "C:/Users/Javier/1.-Master/CURSO18-19/1er_cuatri/Tipología y ciclo de vida de los datos/PRAC1/imagenes/"+aSplit[len(aSplit)- 1]
-        print (ruta)
+        filename = "dia%d.gif"%dia
+        ruta = os.path.join(directorio, filename)
+        print(ruta)
         output = open(ruta,"wb")
         for chunk in r:
             output.write(chunk)
         output.close()
 
-# Extradcción de la información del primer dia
-href = "/Actividad.nsf/frmWeb?ReadForm&idioma=cas&dia=1"
-[day_name,day_temp,day_cond,day_rain,day_text] = extract_info(href)
+# Creamos y abrimos el archivo csv donde vamos a almacenar la información
+with open('tiempo.csv' , 'w' , newline = '') as csvfile:
+    spamwriter = csv.writer(csvfile, delimiter = ";")
+    spamwriter.writerow(["dia","temp_max_min","condicion","porcentaje_lluvia","probabilidad_lluvia", "url_imagen"])
+    # Extracción de la información de todos los días
+    for i in range(1, 8):
+        href = "/Actividad.nsf/frmWeb?ReadForm&idioma=cas&dia=%d"%i
+        [day_name,day_temp,day_cond,day_rain,day_text] = extract_info(href)
+        day_info = data.find('a', attrs={"href":href})
+        load_requests("https:" + day_info.find('img').get('src'), i, directorio_script)
+        url_imagen = os.path.join(directorio_script, "dia%d.gif"%i)
+        spamwriter.writerow([day_name,day_temp,day_cond,day_rain,day_text,url_imagen])
 
-# Mostramos por pantalla la información extraída
-print(day_name)
-print(day_temp)
-print(day_cond)
-print(day_rain)
-print(day_text)
 
-# Extracción de la imagen correspondiente al primer día
-load_requests("https://www.donostia.eus/taxo/imagenes/chancerain.gif")
+
+
+
